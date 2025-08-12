@@ -1,6 +1,9 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { HiLockClosed, HiEye, HiEyeOff, HiExclamationCircle } from 'react-icons/hi';
+import { BASE_URL } from '../utils/constants';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +15,9 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const validateForm = () => {
     const newErrors = {};
@@ -58,8 +64,10 @@ const Login = () => {
     try {
       console.log('Login attempt:', formData);
       // Simulate API call
-      const res = await axios.post("http://localhost:3000/login",formData,{withCredentials: true}) // we pass withCredentials to allow cookies to be sent
+      const res = await axios.post(`${BASE_URL}/login`,formData,{withCredentials: true}) // we pass withCredentials to allow cookies to be sent
       console.log('Login response:', res.data);
+      dispatch({ type: 'user/setUserData', payload: res.data });
+             navigate("/")
       // Handle successful login
     } catch (error) {
       console.error('Login failed:', error);
